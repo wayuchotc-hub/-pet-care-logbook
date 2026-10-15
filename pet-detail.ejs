@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ไดอารี่ของ <%= pet.name %></title>
+    <style>
+        body { background-color: #FAF4EE; font-family: 'Kanit', sans-serif; padding: 20px; }
+        .container { max-width: 750px; margin: 0 auto; }
+        .profile-card { background: white; padding: 25px; border-radius: 20px; border: 2px solid #FFD8CC; text-align: center; margin-bottom: 20px; }
+        .profile-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #FFD8CC; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .section-box { background: white; padding: 20px; border-radius: 15px; border: 1px solid #FFE0D6; }
+        h3 { color: #FF8A8A; margin-top: 0; }
+        input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px; border: 1px solid #FFD8CC; border-radius: 8px; box-sizing: border-box; }
+        button { background: #FF8A8A; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        .log-card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid #FF8A8A; }
+        .log-img { max-width: 100%; border-radius: 10px; margin-top: 10px; }
+        .back-btn { text-decoration: none; color: #888; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">← กลับหน้าหลัก</a>
+
+        <!-- โปรไฟล์น้อง -->
+        <div class="profile-card">
+            <img src="<%= pet.image || 'https://via.placeholder.com/150' %>" class="profile-img">
+            <h2><%= pet.name %> (<%= pet.type %>)</h2>
+            <p><strong>พันธุ์:</strong> <%= pet.breed || '-' %> | <strong>วันเกิด:</strong> <%= pet.birthdate ? new Date(pet.birthdate).toLocaleDateString('th-TH') : '-' %></p>
+            <p>🩺 <strong>โรคประจำตัว:</strong> <%= pet.medicalConditions || 'ไม่มี' %> | 🥩 <strong>แพ้อาหาร:</strong> <%= pet.foodAllergies || 'ไม่มี' %></p>
+        </div>
+
+        <!-- บันทึกหมอนัด + วัคซีน -->
+        <div class="grid">
+            <div class="section-box">
+                <h3>💉 ฉีดวัคซีนล่าสุด</h3>
+                <form action="/pet/<%= pet._id %>/vaccine" method="POST">
+                    <input type="text" name="vaccineName" placeholder="ชื่อวัคซีน" required>
+                    <input type="date" name="date" required>
+                    <button type="submit">บันทึกวัคซีน</button>
+                </form>
+                <hr style="border:0.5px solid #FFF0EB; margin:15px 0;">
+                <% pet.vaccineLogs.reverse().forEach(v => { %>
+                    <p>• <%= v.vaccineName %> (<%= new Date(v.date).toLocaleDateString('th-TH') %>)</p>
+                <% }) %>
+            </div>
+
+            <div class="section-box">
+                <h3>📅 ใกล้วันหมอนัด</h3>
+                <form action="/pet/<%= pet._id %>/appointment" method="POST">
+                    <input type="text" name="title" placeholder="นัดหมายเรื่องอะไร" required>
+                    <input type="date" name="date" required>
+                    <button type="submit">บันทึกวันนัด</button>
+                </form>
+                <hr style="border:0.5px solid #FFF0EB; margin:15px 0;">
+                <% pet.appointments.reverse().forEach(a => { %>
+                    <p>📌 <%= a.title %>: <%= new Date(a.date).toLocaleDateString('th-TH') %></p>
+                <% }) %>
+            </div>
+        </div>
+
+        <!-- เพิ่มไดอารี่ประจำวัน -->
+        <div class="section-box" style="margin-bottom: 20px;">
+            <h3>📖 เพิ่มไดอารี่ประจำวัน</h3>
+            <form action="/pet/<%= pet._id %>/log" method="POST" enctype="multipart/form-data">
+                <label>อารมณ์น้องวันนี้:</label>
+                <select name="mood">
+                    <option value="😊 อารมณ์ดี">😊 อารมณ์ดี</option>
+                    <option value="😴 ง่วงนอนทั้งวัน">😴 ง่วงนอนทั้งวัน</option>
+                    <option value="🤪 ซนมาก">🤪 ซนมาก</option>
+                    <option value="🤢 ซึม/ไม่ค่อยกินข้าว">🤢 ซึม/ไม่ค่อยกินข้าว</option>
+                </select>
+                <label>บันทึกข้อความ:</label>
+                <textarea name="note" rows="3" placeholder="วันนี้ทำอะไรมาบ้าง..."></textarea>
+                <label>แนบรูปถ่ายไดอารี่:</label>
+                <input type="file" name="logImage" accept="image/*">
+                <button type="submit">บันทึกไดอารี่</button>
+            </form>
+        </div>
+
+        <!-- รายการไดอารี่ -->
+        <h3>📜 บันทึกไดอารี่ย้อนหลัง</h3>
+        <% if(pet.dailyLogs.length === 0) { %>
+            <p style="color:#888;">ยังไม่มีบันทึกไดอารี่</p>
+        <% } %>
+        <% pet.dailyLogs.reverse().forEach(log => { %>
+            <div class="log-card">
+                <small style="color:#888;"><%= new Date(log.date).toLocaleString('th-TH') %></small>
+                <p style="font-weight:bold; margin:5px 0;"><%= log.mood %></p>
+                <p style="margin:0;"><%= log.note %></p>
+                <% if(log.image) { %>
+                    <img src="<%= log.image %>" class="log-img">
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>

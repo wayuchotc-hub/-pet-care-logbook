@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>เพิ่มน้องใหม่ - Pet Care Logbook</title>
+    <style>
+        body { background-color: #FAF4EE; font-family: 'Kanit', sans-serif; padding: 30px; display: flex; justify-content: center; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 450px; border: 2px solid #FFD8CC; }
+        h2 { color: #FF8A8A; text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; color: #665A48; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #FFD8CC; border-radius: 10px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #FF8A8A; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #FF6B6B; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #888; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🐾 เพิ่มน้องๆ เข้าบ้าน</h2>
+        <form action="/add-pet" method="POST" enctype="multipart/form-parser" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>ชื่อน้อง:</label>
+                <input type="text" name="name" required placeholder="เช่น ส้มป่อย">
+            </div>
+            <div class="form-group">
+                <label>ประเภทสัตว์เลี้ยง:</label>
+                <select name="type" required>
+                    <option value="แมว">แมว 🐱</option>
+                    <option value="สุนัข">สุนัข 🐶</option>
+                    <option value="กระต่าย">กระต่าย 🐰</option>
+                    <option value="อื่นๆ">อื่นๆ 🐾</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>สายพันธุ์ / สี:</label>
+                <input type="text" name="breed" placeholder="เช่น ไทย สีส้ม">
+            </div>
+            <div class="form-group">
+                <label>วันเกิด (เลือกจากปฏิทิน):</label>
+                <input type="date" name="birthdate">
+            </div>
+            <div class="form-group">
+                <label>โรคประจำตัว:</label>
+                <input type="text" name="medicalConditions" placeholder="ไม่มี / พิมพ์ระบุโรค">
+            </div>
+            <div class="form-group">
+                <label>อาหารที่แพ้:</label>
+                <input type="text" name="foodAllergies" placeholder="ไม่มี / พิมพ์ระบุอาหารที่แพ้">
+            </div>
+            <div class="form-group">
+                <label>รูปถ่ายประจำตัว:</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
+            <button type="submit">บันทึกข้อมูลน้อง</button>
+        </form>
+        <a href="/" class="back-link">← กลับหน้าแรก</a>
+    </div>
+</body>
+</html>
